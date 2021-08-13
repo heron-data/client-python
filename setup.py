@@ -2,7 +2,7 @@
 
 import os.path
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 # The directory containing this file
 HERE = os.path.abspath(os.path.dirname(__file__))
@@ -13,8 +13,8 @@ with open(os.path.join(HERE, "README.md")) as fid:
 
 # This call to setup() does all the work
 setup(
-    name="heron",
-    version="0.0.1",
+    name="heron-data",
+    version="0.0.2",
     description="A client for the Heron Data API",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -28,8 +28,8 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
     ],
-    packages=["heron"],
+    packages=find_packages(exclude=["tests", "examples", "tests.*"]),
     python_requires=">=3.8.*",
     include_package_data=True,
-    install_requires=["requests"],
+    install_requires=["requests==2.26.0"],
 )
