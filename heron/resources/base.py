@@ -44,17 +44,13 @@ class BaseResource(Base):
                 payloads = res_json[cls._envelope.many]
                 return [cls(**payload) for payload in payloads]
 
-        if not retry:
-            print(res_json)
-            print(json)
-            print(res.status_code)
-            print(res.request.url)
-            if res.status_code == 422:
-                e = error.HeronValidationError(str(res.json()))
-                e.code = res.status_code
-                e.json = res_json
-                raise e
+        if res.status_code == 422:
+            e = error.HeronValidationError(str(res.json()))
+            e.code = res.status_code
+            e.json = res_json
+            raise e
 
+        if not str(res.status_code).startswith("5") or not retry:
             try:
                 e = error.HeronError(res.json()["name"])
             except KeyError:
