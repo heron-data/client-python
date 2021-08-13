@@ -26,11 +26,13 @@ class Transaction(BaseResource):
         )
 
     @classmethod
-    def create(cls, end_user_id=None, name=None):
-        raise NotImplementedError("use Transaction.create_many")
+    def create(cls, **data):
+        return cls.create_many([data])[0]
 
     @classmethod
-    def create_many(cls, transactions):
+    def create_many(cls, transactions, end_user=None):
+        from .end_user import EndUser
+
         if not isinstance(transactions, list):
             raise ValueError("create_many needs a list")
         if not transactions:
@@ -40,6 +42,16 @@ class Transaction(BaseResource):
         if not all("description" in t and "amount" in t for t in transactions):
             raise ValueError("'description' and 'amount' are required")
 
+        if end_user:
+            if not isinstance(end_user, EndUser):
+                raise ValueError("end_user kwarg must be and object of class EndUser")
+            transactions = [
+                {
+                    **t,
+                    **{"end_user_id", end_user.end_user_id},
+                }
+                for t in transactions
+            ]
         return super().create_many(transactions)
 
     @classmethod
