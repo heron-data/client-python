@@ -52,6 +52,9 @@ class Transaction(BaseResource):
                 }
                 for t in transactions
             ]
+
+        # TODO parse amount and other values depending on data source e.g. plaid
+
         return super().create_many(transactions)
 
     @classmethod
