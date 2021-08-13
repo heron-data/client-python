@@ -13,7 +13,7 @@ with open(os.path.join(HERE, "README.md")) as fid:
 
 # This call to setup() does all the work
 setup(
-    name="heron-client",
+    name="heron",
     version="0.0.1",
     description="A client for the Heron Data API",
     long_description=README,
