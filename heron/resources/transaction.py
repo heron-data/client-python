@@ -26,8 +26,8 @@ class Transaction(BaseResource):
         )
 
     @classmethod
-    def create(cls, **data):
-        return cls.create_many([data])[0]
+    def create(cls, end_user=None, **data):
+        return cls.create_many([data], end_user=end_user)[0]
 
     @classmethod
     def create_many(cls, transactions, end_user=None):
