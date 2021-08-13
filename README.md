@@ -12,7 +12,7 @@ See the [OpenAPI Docs](https://app.herondata.io/docs).
 If you just want to use the package, just run:
 
 ```sh
-pip install --upgrade stripe
+pip install --upgrade heron
 ```
 
 Install from source with:
