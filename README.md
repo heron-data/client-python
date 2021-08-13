@@ -1,6 +1,6 @@
 # Heron Python Library
 
-The Heron Python library provides easy access to the Stripe API from
+The Heron Python library provides easy access to the Heron Data API from
 applications written in Python.
 
 ## Documentation
