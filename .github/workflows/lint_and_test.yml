@@ -1,0 +1,22 @@
+name: Lint and Test
+on:
+  pull_request:
+    branches: [master]
+jobs:
+  lint_and_test:
+    runs-on: ubuntu-latest
+    container: python:3.8.5-slim-buster
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: req-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements.test.txt') }}
+    - name: Install dependencies
+      run: pip install -r requirements.dev.txt
+    - name: Lint
+      run: black --check . && flake8 .
+    - name: Test
+      run: coverage run -m unittest
+    - name: Coverage
+      run: coverage report
