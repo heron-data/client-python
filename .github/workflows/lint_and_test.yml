@@ -17,4 +17,4 @@ jobs:
     - name: Lint
       run: black --check . && flake8 .
     - name: Test
-      run: pytest -n auto --cov=app --cov-fail-under=95 --cov-report=term-missing
+      run: coverage run -m unittest && coverage report
