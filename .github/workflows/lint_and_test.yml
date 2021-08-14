@@ -17,4 +17,6 @@ jobs:
     - name: Lint
       run: black --check . && flake8 .
     - name: Test
-      run: coverage run -m unittest && coverage report
+      run: coverage run -m unittest
+    - name: Coverage
+      run: coverage report
