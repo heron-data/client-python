@@ -17,6 +17,7 @@ class BaseResource:
 
         if not path:
             path = cls._path
+        kwargs = {"params": params} if params else {}
 
         req = getattr(requests, method)
         res = req(
@@ -27,7 +28,7 @@ class BaseResource:
                 basic_auth_username or "",
                 basic_auth_password or "",
             ),
-            **params,
+            **kwargs,
         )
         res_json = res.json()
         if res.ok:
@@ -63,20 +64,20 @@ class BaseResource:
         return cls.do_request(method, path, json, retry=False, **params)
 
     @classmethod
-    def create(cls, path=None, **kwargs):
-        json = {cls._envelope.single: kwargs}
+    def create(cls, path=None, **body):
+        json = {cls._envelope.single: body}
         return cls.do_request("post", path=path, json=json, retry=True)
 
     @classmethod
-    def create_many(cls, ls, path=None):
-        json = {cls._envelope.many: ls}
+    def create_many(cls, bodies, path=None):
+        json = {cls._envelope.many: bodies}
         return cls.do_request("post", path=path, json=json, retry=True)
 
     @classmethod
-    def update(cls, path=None, **kwargs):
-        json = {cls._envelope.single: kwargs}
+    def update(cls, path=None, **body):
+        json = {cls._envelope.single: body}
         return cls.do_request("put", path=path, json=json)
 
     @classmethod
     def list(cls, path=None, **params):
-        return cls.do_request("get", path=path, retry=False, **params)
+        return cls.do_request("get", path=path, retry=True, **params)
