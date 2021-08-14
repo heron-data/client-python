@@ -237,14 +237,16 @@ class TestList(unittest.TestCase):
         with patch("requests.get") as mock_get:
             mock_get.return_value = MockResponse(self.response_payload, 200)
 
-            transactions = Transaction.list()
+            transactions = Transaction.list(end_user_id="1")
 
             for transaction in transactions:
                 self.assertIsInstance(transaction, Transaction)
                 self.assertIsInstance(transaction.categories[0], Category)
                 self.assertIsInstance(transaction.merchant, Merchant)
                 self.assertIsInstance(transaction.payment_processor, Merchant)
-                mock_get.assert_called_once_with(ANY, headers=ANY, json=None, auth=ANY)
+                mock_get.assert_called_once_with(
+                    ANY, headers=ANY, json=None, auth=ANY, params={"end_user_id": "1"}
+                )
 
     def test_validation_error(self):
         with patch("requests.get") as mock_get:
