@@ -1,8 +1,10 @@
+import os
+
 import heron
 
-heron.basic_auth_username = "user"
-heron.basic_auth_password = "pw"
-heron.data_source = "plaid"
+heron.basic_auth_username = os.getenv("HERON_USERNAME")
+heron.basic_auth_password = os.getenv("HERON_PASSWORD")
+heron.provider = "plaid"
 
 end_user = heron.EndUser.create(
     name="Spotify UK",

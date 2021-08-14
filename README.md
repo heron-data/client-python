@@ -1,11 +1,13 @@
 # Heron Python Library
 
-The Heron Python library provides easy access to the Heron Data API from
-applications written in Python.
+This library provides easy access to the Heron Data API from applications
+written in Python.
 
 ## Documentation
 
-See the [OpenAPI Docs](https://app.herondata.io/docs).
+No language-specific docs are currently maintained. For documentation on the
+raw REST API this library uses behind the scenes, see our [OpenAPI
+Docs](https://app.herondata.io/docs).
 
 ## Installation
 
@@ -35,8 +37,8 @@ import heron
 heron.basic_auth_username = "your-username"
 heron.basic_auth_password = "super-random-password"
 
-# optionally, specify the provider pull bank data from, in lowercase
-heron.data_source = "plaid"
+# optionally, specify the provider used to pull bank data from, in slug format
+heron.provider = "plaid"
 ```
 
 Then you can issue API requests using Python classes:
