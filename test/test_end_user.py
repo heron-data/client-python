@@ -30,14 +30,14 @@ class TestEndUser(unittest.TestCase):
             )
 
     def test_update(self):
-        with patch("requests.put") as mock_post:
-            mock_post.return_value = MockResponse(self.response_payload, 200)
+        with patch("requests.put") as mock_put:
+            mock_put.return_value = MockResponse(self.response_payload, 200)
             new_status = "ready"
 
             end_user = EndUser.update(**self.end_user_dict, status=new_status)
 
             self.assertIsInstance(end_user, EndUser)
-            mock_post.assert_called_once_with(
+            mock_put.assert_called_once_with(
                 ANY,
                 headers=ANY,
                 json={
@@ -47,4 +47,15 @@ class TestEndUser(unittest.TestCase):
                     },
                 },
                 auth=ANY,
+            )
+
+    def test_list(self):
+        with patch("requests.get") as mock_get:
+            mock_get.return_value = MockResponse({"end_users": []}, 200)
+            params = {"page": 1, "limit": 100}
+
+            EndUser.list(**params)
+
+            mock_get.assert_called_once_with(
+                ANY, headers=ANY, json=None, auth=ANY, params=params
             )

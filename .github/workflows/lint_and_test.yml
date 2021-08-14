@@ -1,7 +1,7 @@
 name: Lint and Test
 on:
   pull_request:
-    branches: [master]
+    branches: [main]
 jobs:
   lint_and_test:
     runs-on: ubuntu-latest
@@ -11,7 +11,7 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: ~/.cache/pip
-        key: req-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements.test.txt') }}
+        key: req-${{ hashFiles('requirements.dev.txt') }}
     - name: Install dependencies
       run: pip install -r requirements.dev.txt
     - name: Lint

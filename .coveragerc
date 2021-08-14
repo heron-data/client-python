@@ -2,4 +2,4 @@
 source = heron
 
 [report]
-fail_under = 90.0
+fail_under = 95.0

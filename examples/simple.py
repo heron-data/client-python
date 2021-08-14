@@ -28,3 +28,9 @@ transactions = heron.Transaction.create_many(
 end_user.update(status="ready")
 
 transactions = heron.Transaction.list(end_user_id=end_user.end_user_id, limit=100)
+
+transactions = heron.Transaction.feedback(
+    transaction=transaction,
+    category="Expenses",
+    merchant="Netflix",
+)
