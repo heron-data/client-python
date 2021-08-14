@@ -11,6 +11,12 @@ class BaseResource:
     _envelope = None
     _path = None
 
+    def __init__(self, **kwargs):
+        self.heron_id = kwargs.get("heron_id")
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__}: {self.heron_id}>"
+
     @classmethod
     def do_request(cls, method, path=None, json=None, retry=False, **params):
         from heron import base_url, basic_auth_password, basic_auth_username, error
