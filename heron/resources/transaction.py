@@ -57,7 +57,34 @@ class Transaction(BaseResource):
         return super().create_many(transactions)
 
     @classmethod
-    def feedback(cls, transaction=None, merchant=None, category=None):
-        # TODO check if merchant or category are strings, build payload
-        # accordingly and use the /feedback path
-        raise NotImplementedError("feedback endpoint not yet supported")
+    def feedback(cls, *, transaction, merchant=None, category=None):
+        from .category import Category
+        from .merchant import Merchant
+
+        if isinstance(transaction, Transaction):
+            transaction = transaction.heron_id
+        if not isinstance(transaction, str):
+            raise ValueError("transaction must be a string or Transaction object")
+        if not transaction.startswith("txn_"):
+            raise ValueError("invalid transaction heron_id, must start with 'txn_'")
+
+        kwargs = {}
+        if merchant is not None:
+            if isinstance(merchant, Merchant):
+                merchant = {"heron_id": merchant.heron_id}
+            elif isinstance(merchant, str):
+                merchant = {"name": merchant}
+            else:
+                raise ValueError("merchant must be a string or object")
+            kwargs.update({"merchant": merchant})
+
+        if category is not None:
+            if isinstance(category, Category):
+                category = {"heron_id": category.heron_id}
+            elif isinstance(category, str):
+                category = {"label": category}
+            else:
+                raise ValueError("category must be a string or object")
+            kwargs.update({"category": category})
+
+        super().update(path=f"transactions/{transaction}/feedback", **kwargs)
