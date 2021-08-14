@@ -25,10 +25,8 @@ class TestEndUser(unittest.TestCase):
             end_user = EndUser.create(**self.end_user_dict)
 
             self.assertIsInstance(end_user, EndUser)
-            self.assertIsNone(
-                mock_post.assert_called_once_with(
-                    ANY, headers=ANY, json=self.request_payload, auth=ANY
-                )
+            mock_post.assert_called_once_with(
+                ANY, headers=ANY, json=self.request_payload, auth=ANY
             )
 
     def test_update(self):
@@ -39,16 +37,14 @@ class TestEndUser(unittest.TestCase):
             end_user = EndUser.update(**self.end_user_dict, status=new_status)
 
             self.assertIsInstance(end_user, EndUser)
-            self.assertIsNone(
-                mock_post.assert_called_once_with(
-                    ANY,
-                    headers=ANY,
-                    json={
-                        "end_user": {
-                            **self.end_user_dict,
-                            "status": new_status,
-                        },
+            mock_post.assert_called_once_with(
+                ANY,
+                headers=ANY,
+                json={
+                    "end_user": {
+                        **self.end_user_dict,
+                        "status": new_status,
                     },
-                    auth=ANY,
-                )
+                },
+                auth=ANY,
             )

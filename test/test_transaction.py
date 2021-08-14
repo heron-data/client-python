@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import ANY, patch
 
+from heron import error
 from heron.resources import Category, EndUser, Merchant, Transaction
 
 from .mocks import MockResponse
@@ -171,6 +172,11 @@ class TestList(unittest.TestCase):
         self.response_payload = {
             "transactions": [{**self.transaction_dict, **self.enrichments}] * 3
         }
+        self.validation_error_payload = {
+            "code": 422,
+            "name": "Unprocessable Entity",
+            "description": {},
+        }
 
     def test_list(self):
         with patch("requests.get") as mock_get:
@@ -183,8 +189,22 @@ class TestList(unittest.TestCase):
                 self.assertIsInstance(transaction.categories[0], Category)
                 self.assertIsInstance(transaction.merchant, Merchant)
                 self.assertIsInstance(transaction.payment_processor, Merchant)
-                self.assertIsNone(
-                    mock_get.assert_called_once_with(
-                        ANY, headers=ANY, json=None, auth=ANY
-                    )
-                )
+                mock_get.assert_called_once_with(ANY, headers=ANY, json=None, auth=ANY)
+
+    def test_validation_error(self):
+        with patch("requests.get") as mock_get:
+            mock_get.return_value = MockResponse(self.validation_error_payload, 422)
+
+            with self.assertRaises(error.HeronValidationError):
+                transactions = Transaction.list()
+                self.assertIsNone(transactions)
+                mock_get.assert_called_once_with(ANY, headers=ANY, json=None, auth=ANY)
+
+    def test_internal_server_error(self):
+        with patch("requests.get") as mock_get:
+            mock_get.return_value = MockResponse({}, 500)
+
+            with self.assertRaises(error.HeronError):
+                transactions = Transaction.list()
+                self.assertIsNone(transactions)
+                mock_get.assert_called_once_with(ANY, headers=ANY, json=None, auth=ANY)
