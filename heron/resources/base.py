@@ -33,10 +33,17 @@ class BaseResource:
         if res.ok:
             try:
                 payload = res_json[cls._envelope.single]
-                return cls(**payload)
             except KeyError:
+                pass
+            else:
+                return cls(**payload)
+            try:
                 payloads = res_json[cls._envelope.many]
+            except KeyError:
+                pass
+            else:
                 return [cls(**payload) for payload in payloads]
+            return None
 
         if res.status_code == 422:
             e = error.HeronValidationError(str(res.json()))
