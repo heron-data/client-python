@@ -48,19 +48,16 @@ class Transaction(BaseResource):
             transactions = [
                 {
                     **t,
-                    **{"end_user_id", end_user.end_user_id},
+                    **{"end_user_id": end_user.end_user_id},
                 }
                 for t in transactions
             ]
-
         # TODO parse amount and other values depending on data source e.g. plaid
 
         return super().create_many(transactions)
 
     @classmethod
-    def update(cls, end_user_id=None, name=None, status="new"):
-        return super().update(end_user_id=end_user_id, name=name, status=status)
-
-    @classmethod
-    def list(cls, page=None, limit=None):
-        return super().list(page=page, limit=limit)
+    def feedback(cls, transaction=None, merchant=None, category=None):
+        # TODO check if merchant or category are strings, build payload
+        # accordingly and use the /feedback path
+        raise NotImplementedError("feedback endpoint not yet supported")

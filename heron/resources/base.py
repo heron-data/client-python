@@ -1,5 +1,3 @@
-from collections import namedtuple
-
 import requests
 
 
@@ -9,20 +7,13 @@ class Envelope:
         self.many = many
 
 
-class Base:
-    def __init__(self, **data):
-        N = namedtuple(self.__class__.__name__, data.keys())
-        return N(**data)
-
-
-class BaseResource(Base):
+class BaseResource:
     _envelope = None
     _path = None
 
     @classmethod
     def do_request(cls, method, path=None, json=None, retry=False, **params):
-        from heron import (base_url, basic_auth_password, basic_auth_username,
-                           error)
+        from heron import base_url, basic_auth_password, basic_auth_username, error
 
         if not path:
             path = cls._path
@@ -32,7 +23,10 @@ class BaseResource(Base):
             f"{base_url}/{path}",
             headers={"Content-Type": "application/json"},
             json=json,
-            auth=requests.auth.HTTPBasicAuth(basic_auth_username, basic_auth_password),
+            auth=requests.auth.HTTPBasicAuth(
+                basic_auth_username or "",
+                basic_auth_password or "",
+            ),
             **params,
         )
         res_json = res.json()
@@ -77,5 +71,5 @@ class BaseResource(Base):
         return cls.do_request("put", path=path, json=json)
 
     @classmethod
-    def list(cls, path=None, **kwargs):
-        return cls.do_request("get", path=path, retry=False, **kwargs)
+    def list(cls, path=None, **params):
+        return cls.do_request("get", path=path, retry=False, **params)

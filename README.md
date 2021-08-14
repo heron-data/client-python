@@ -48,3 +48,31 @@ transactions = heron.Transaction.create_many([...])
 ```
 
 You can see a longer example in the `examples/` directory.
+
+## Contributing
+
+Clone this repository, and install dev dependencies:
+
+```
+pip install -r requirements.dev.txt
+```
+
+Run tests and capture coverage with:
+
+```
+coverage run -m unittest
+```
+
+See test coverage with:
+
+```
+coverage report
+```
+
+Run linting with `flake8` and `black`:
+
+```
+flake8 . && black .
+```
+
+Make a PR against the `main` branch and it will be reviewed.

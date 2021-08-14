@@ -1,0 +1,5 @@
+[flake8]
+max-line-length=120
+max-complexity=20
+extend-ignore=E203,E402,E501,W503,W605,W291
+extend-exclude=venv/
