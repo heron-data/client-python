@@ -33,5 +33,5 @@ class Merchant(BaseResource):
         raise NotImplementedError("cannot list merchants, use Merchant.search instead")
 
     @classmethod
-    def search(cls, name=None):
+    def search(cls, *, name):
         return super().list(path="merchants/search", name=name)

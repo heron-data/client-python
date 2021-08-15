@@ -31,6 +31,39 @@ class TestSearch(unittest.TestCase):
                 )
 
 
+class TestGet(unittest.TestCase):
+    def setUp(self):
+        self.merchant_dict = {
+            "heron_id": "mrc_123",
+            "name": "Spotify",
+            "url": "foo.com",
+            "logo_url": "logo.foo.com",
+            "icon_url": "icon.foo.com",
+        }
+        self.response_payload = {"merchant": self.merchant_dict}
+
+    def test_get(self):
+        with patch("requests.get") as mock_get:
+            mock_get.return_value = MockResponse(self.response_payload, 200)
+
+            merchant = Merchant.get(self.merchant_dict["heron_id"])
+
+            self.assertIsInstance(merchant, Merchant)
+            self.assertEqual(merchant.heron_id, self.merchant_dict["heron_id"])
+            mock_get.assert_called_once_with(ANY, headers=ANY, json=None, auth=ANY)
+
+    def test_invalid_heron_id(self):
+        with patch("requests.get") as mock_get:
+            mock_get.return_value = MockResponse(self.response_payload, 200)
+
+            with self.assertRaises(ValueError):
+                Merchant.get("merchaaant")
+            with self.assertRaises(ValueError):
+                Merchant.get(123)
+
+            mock_get.assert_not_called()
+
+
 class TestCreate(unittest.TestCase):
     def test_not_implemented(self):
         with patch("requests.post") as mock_request:

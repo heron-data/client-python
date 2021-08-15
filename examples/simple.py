@@ -31,8 +31,11 @@ end_user.update(status="ready")
 
 transactions = heron.Transaction.list(end_user_id=end_user.end_user_id, limit=100)
 
+categories = heron.Category.list()
+merchants = heron.Merchant.search(name="Netflix")
+
 transactions = heron.Transaction.feedback(
     transaction=transaction,
-    category="Expenses",
-    merchant="Netflix",
+    category=categories[0],
+    merchant=merchants[0],
 )
