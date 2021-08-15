@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import ANY, patch
 
-from heron.resources import EndUser
+from heron import EndUser
 
 from .mocks import MockResponse
 

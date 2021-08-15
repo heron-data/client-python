@@ -1,8 +1,7 @@
 import unittest
 from unittest.mock import ANY, patch
 
-from heron import error
-from heron.resources import Category, EndUser, Merchant, Transaction
+from heron import Category, EndUser, Merchant, Transaction, error
 
 from .mocks import MockResponse
 
@@ -12,6 +11,11 @@ class TestCreate(unittest.TestCase):
         self.transaction_dict = {
             "amount": 11.11,
             "description": "foo bar 123",
+            "timestamp": "2021-08-07T00:01:12+00",
+            "mcc_code": "1234",
+            "account_id": "1234",
+            "reference_id": "1234",
+            "end_user_id": "end-user-1234",
         }
         self.enrichments = {
             "description_clean": "foo bar",
@@ -32,7 +36,6 @@ class TestCreate(unittest.TestCase):
             },
             "payment_processor": {
                 "heron_id": "mrc_456",
-                "name": "Foo",
                 "url": "https://www.foo.com/",
             },
         }
@@ -49,6 +52,8 @@ class TestCreate(unittest.TestCase):
             transaction = Transaction.create(**self.request_payload["transactions"][0])
 
             self.assertIsInstance(transaction, Transaction)
+            for key, value in self.transaction_dict.items():
+                self.assertEqual(getattr(transaction, key), value)
             self.assertIsInstance(transaction.categories[0], Category)
             self.assertIsInstance(transaction.merchant, Merchant)
             self.assertIsInstance(transaction.payment_processor, Merchant)

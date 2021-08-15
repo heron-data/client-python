@@ -4,6 +4,7 @@ from .base import BaseResource, Envelope
 class EndUser(BaseResource):
     _envelope = Envelope("end_user", "end_users")
     _path = "end_users"
+    _prefix = "eus_"
 
     def __init__(self, **data):
         self.heron_id = data.get("heron_id")

@@ -15,7 +15,7 @@ jobs:
     - name: Install dependencies
       run: pip install -r requirements.dev.txt
     - name: Lint
-      run: black --check . && flake8 .
+      run: black --check . && flake8 . && isort --check .
     - name: Test
       run: coverage run -m unittest
     - name: Coverage

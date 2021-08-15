@@ -1,4 +1,8 @@
+from json.decoder import JSONDecodeError
+
 import requests
+
+from heron import _base_url, error
 
 
 class Envelope:
@@ -10,6 +14,7 @@ class Envelope:
 class BaseResource:
     _envelope = None
     _path = None
+    _prefix = ""
 
     def __init__(self, **kwargs):
         self.heron_id = kwargs.get("heron_id")
@@ -19,7 +24,7 @@ class BaseResource:
 
     @classmethod
     def do_request(cls, method, path=None, json=None, retry=False, **params):
-        from heron import base_url, basic_auth_password, basic_auth_username, error
+        from heron import basic_auth_password, basic_auth_username
 
         if not path:
             path = cls._path
@@ -27,7 +32,7 @@ class BaseResource:
 
         req = getattr(requests, method)
         res = req(
-            f"{base_url}/{path}",
+            f"{_base_url}/{path}",
             headers={"Content-Type": "application/json"},
             json=json,
             auth=requests.auth.HTTPBasicAuth(
@@ -36,38 +41,43 @@ class BaseResource:
             ),
             **kwargs,
         )
-        res_json = res.json()
         if res.ok:
             try:
-                payload = res_json[cls._envelope.single]
+                payload = res.json()[cls._envelope.single]
             except KeyError:
                 pass
             else:
                 return cls(**payload)
             try:
-                payloads = res_json[cls._envelope.many]
+                payloads = res.json()[cls._envelope.many]
             except KeyError:
                 pass
             else:
                 return [cls(**payload) for payload in payloads]
             return None
 
+        try:
+            error_json = res.json()
+        except JSONDecodeError:
+            error_json = {"description": "Something went wrong"}
+
         if res.status_code == 422:
-            e = error.HeronValidationError(str(res.json()))
+            e = error.HeronValidationError(error_json["description"])
             e.code = res.status_code
-            e.json = res_json
+            e.json = error_json
             raise e
 
         if not str(res.status_code).startswith("5") or not retry:
             try:
-                e = error.HeronError(res.json()["name"])
+                error_msg = error_json["description"] or error_json["name"]
             except KeyError:
-                e = error.HeronError("Something went wrong")
+                error_msg = "Something went wrong"
+            e = error.HeronError(error_msg)
             e.code = res.status_code
-            e.json = res_json
+            e.json = error_json
             raise e
 
-        return cls.do_request(method, path, json, retry=False, **params)
+        return cls.do_request(method, path=path, json=json, retry=False, **params)
 
     @classmethod
     def create(cls, path=None, **body):
@@ -87,3 +97,13 @@ class BaseResource:
     @classmethod
     def list(cls, path=None, **params):
         return cls.do_request("get", path=path, retry=True, **params)
+
+    @classmethod
+    def get(cls, resource_id):
+        if not isinstance(resource_id, str):
+            raise ValueError(f"{cls._envelope.single}_id must be a string")
+        if not resource_id.startswith(cls._prefix):
+            raise ValueError(
+                f"invalid {cls._envelope.single}_id, must start with '{cls._prefix}'"
+            )
+        return cls.do_request("get", path=f"{cls._path}/{resource_id}", retry=False)
