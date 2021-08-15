@@ -6,6 +6,12 @@ from heron import Merchant
 from .mocks import MockResponse
 
 
+class TestRepr(unittest.TestCase):
+    def test_repr(self):
+        m = Merchant(heron_id="mrc_1", name="foo")
+        self.assertEqual(str(m), "<Merchant mrc_1: foo>")
+
+
 class TestSearch(unittest.TestCase):
     def setUp(self):
         self.merchant_dict = {

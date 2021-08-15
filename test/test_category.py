@@ -6,6 +6,12 @@ from heron import Category
 from .mocks import MockResponse
 
 
+class TestRepr(unittest.TestCase):
+    def test_repr(self):
+        c = Category(heron_id="ctg_1", label="foo")
+        self.assertEqual(str(c), "<Category ctg_1: foo>")
+
+
 class TestList(unittest.TestCase):
     def setUp(self):
         self.category_dict = {
