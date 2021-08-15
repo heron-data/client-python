@@ -1,6 +1,6 @@
-from datetime import datetime
-
 from .base import BaseResource, Envelope
+from .category import Category
+from .merchant import Merchant
 
 
 class Transaction(BaseResource):
@@ -8,22 +8,33 @@ class Transaction(BaseResource):
     _path = "transactions"
 
     def __init__(self, **data):
-        from .category import Category
-        from .merchant import Merchant
-
         self.heron_id = data.get("heron_id")
+        self.account_id = data.get("account_id")
+        self.end_user_id = data.get("end_user_id")
+        self.reference_id = data.get("reference_id")
+
         self.amount = data.get("amount")
-        self.timestamp = (
-            datetime.fromisoformat(t) if (t := data.get("timestamp")) else None
-        )
+        self.currency = data.get("currency")
+        self.timestamp = data.get("timestamp")
+
         self.description = data.get("description")
         self.description_clean = data.get("description_clean")
         self.counterparty = data.get("description_clean")
+
         self.categories = [Category(**c) for c in data.get("categories", [])]
+
         self.merchant = Merchant(**m) if (m := data.get("merchant")) else None
         self.payment_processor = (
             Merchant(**p) if (p := data.get("payment_processor")) else None
         )
+
+        self.mcc_code = data.get("mcc_code")
+        self.mcc = data.get("mcc_code")
+        self.transaction_code = data.get("transaction_code")
+
+        self.has_matching_transaction = data.get("has_matching_transaction")
+        self.is_potential_duplicate = data.get("is_potential_duplicate")
+        self.is_recurring = data.get("is_recurring")
 
     @classmethod
     def create(cls, end_user=None, **data):
@@ -66,9 +77,6 @@ class Transaction(BaseResource):
 
     @classmethod
     def feedback(cls, *, transaction, merchant=None, category=None):
-        from .category import Category
-        from .merchant import Merchant
-
         if isinstance(transaction, Transaction):
             transaction = transaction.heron_id
         if not isinstance(transaction, str):

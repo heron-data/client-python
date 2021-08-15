@@ -1,5 +1,7 @@
 import requests
 
+from heron import _base_url, error
+
 
 class Envelope:
     def __init__(self, single, many):
@@ -19,7 +21,7 @@ class BaseResource:
 
     @classmethod
     def do_request(cls, method, path=None, json=None, retry=False, **params):
-        from heron import base_url, basic_auth_password, basic_auth_username, error
+        from heron import basic_auth_password, basic_auth_username
 
         if not path:
             path = cls._path
@@ -27,7 +29,7 @@ class BaseResource:
 
         req = getattr(requests, method)
         res = req(
-            f"{base_url}/{path}",
+            f"{_base_url}/{path}",
             headers={"Content-Type": "application/json"},
             json=json,
             auth=requests.auth.HTTPBasicAuth(
@@ -67,7 +69,7 @@ class BaseResource:
             e.json = res_json
             raise e
 
-        return cls.do_request(method, path, json, retry=False, **params)
+        return cls.do_request(method, path=path, json=json, retry=False, **params)
 
     @classmethod
     def create(cls, path=None, **body):

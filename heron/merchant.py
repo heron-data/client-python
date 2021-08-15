@@ -1,5 +1,10 @@
-# TODO make API resource
-class Merchant:
+from .base import BaseResource, Envelope
+
+
+class Merchant(BaseResource):
+    _envelope = Envelope("merchant", "merchants")
+    _path = "merchants"
+
     def __init__(self, **kwargs):
         self.heron_id = kwargs.get("heron_id")
         self.name = kwargs.get("name")
