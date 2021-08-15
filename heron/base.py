@@ -1,3 +1,4 @@
+import os
 from json.decoder import JSONDecodeError
 
 import requests
@@ -36,8 +37,8 @@ class BaseResource:
             headers={"Content-Type": "application/json"},
             json=json,
             auth=requests.auth.HTTPBasicAuth(
-                basic_auth_username or "",
-                basic_auth_password or "",
+                basic_auth_username or os.getenv("HERON_USERNAME", ""),
+                basic_auth_password or os.getenv("HERON_PASSWORD", ""),
             ),
             **kwargs,
         )
