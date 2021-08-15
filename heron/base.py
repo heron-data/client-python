@@ -12,6 +12,7 @@ class Envelope:
 class BaseResource:
     _envelope = None
     _path = None
+    _prefix = ""
 
     def __init__(self, **kwargs):
         self.heron_id = kwargs.get("heron_id")
@@ -89,3 +90,13 @@ class BaseResource:
     @classmethod
     def list(cls, path=None, **params):
         return cls.do_request("get", path=path, retry=True, **params)
+
+    @classmethod
+    def get(cls, resource_id):
+        if not isinstance(resource_id, str):
+            raise ValueError(f"{cls._envelope.single}_id must be a string")
+        if not resource_id.startswith(cls._prefix):
+            raise ValueError(
+                f"invalid {cls._envelope.single}_id, must start with '{cls._prefix}'"
+            )
+        return cls.do_request("get", path=f"{cls._path}/{resource_id}", retry=False)

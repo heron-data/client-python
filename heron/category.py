@@ -4,6 +4,7 @@ from .base import BaseResource, Envelope
 class Category(BaseResource):
     _envelope = Envelope("category", "categories")
     _path = "categories"
+    _prefix = "ctg_"
 
     def __init__(self, **kwargs):
         self.heron_id = kwargs.get("heron_id")

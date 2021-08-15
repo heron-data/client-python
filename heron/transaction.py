@@ -6,6 +6,7 @@ from .merchant import Merchant
 class Transaction(BaseResource):
     _envelope = Envelope("transaction", "transactions")
     _path = "transactions"
+    _prefix = "txn_"
 
     def __init__(self, **data):
         self.heron_id = data.get("heron_id")
@@ -81,8 +82,8 @@ class Transaction(BaseResource):
             transaction = transaction.heron_id
         if not isinstance(transaction, str):
             raise ValueError("transaction must be a string or Transaction object")
-        if not transaction.startswith("txn_"):
-            raise ValueError("invalid transaction heron_id, must start with 'txn_'")
+        if not transaction.startswith(cls._prefix):
+            raise ValueError(f"invalid heron_id, must start with '{cls._prefix}'")
 
         if not merchant and not category:
             raise ValueError("either merchant or category required for feedback")
