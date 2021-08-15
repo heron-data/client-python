@@ -45,7 +45,7 @@ def from_finicity(t):
         "account_id": t["accountId"],
         "amount": t["amount"],
         "categories_default": t["categorization"]["category"],
-        "date": t["postedDate"],  # TODO convert to isoformat
+        "timestamp": utils.to_iso_format(t["postedDate"]),
         "description": t["description"],
         "reference_id": str(t["id"]),
         "transaction_code": t["type"],

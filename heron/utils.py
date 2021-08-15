@@ -1,4 +1,5 @@
 import warnings
+from datetime import datetime
 
 
 def to_dollars(cents):
@@ -17,3 +18,20 @@ def to_dollars(cents):
         raise ValueError(f"cannot convert {cents} cents to dollars")
 
     return round(dollars, 2)
+
+
+def to_iso_format(d):
+    if isinstance(d, int):
+        return datetime.fromtimestamp(d).isoformat()
+
+    if isinstance(d, str) and d.isdigit():
+        return datetime.fromtimestamp(int(d)).isoformat()
+
+    try:
+        datetime.strptime(d, "%Y-%m-%dT%H:%M:%S")
+    except TypeError:
+        pass
+    else:
+        return d
+
+    raise ValueError(f"cannot convert {d} to ISO format")

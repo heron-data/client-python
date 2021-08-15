@@ -228,7 +228,7 @@ class TestCreateFromProvider(unittest.TestCase):
             "categorization": {
                 "category": self.normalized_payload["categories_default"],
             },
-            "postedDate": self.normalized_payload["timestamp"].split("T")[0],
+            "postedDate": "1485648000",
             "description": self.normalized_payload["description"],
             "id": self.normalized_payload["reference_id"],
             "type": self.normalized_payload["transaction_code"],
@@ -240,9 +240,6 @@ class TestCreateFromProvider(unittest.TestCase):
             Transaction.create(**finicity_data)
 
             normalized_payload_without_currency = deepcopy(self.normalized_payload)
-            normalized_payload_without_currency[
-                "date"
-            ] = normalized_payload_without_currency.pop("timestamp").split("T")[0]
             normalized_payload_without_currency.pop("currency")
             mock_post.assert_called_once_with(
                 ANY,
