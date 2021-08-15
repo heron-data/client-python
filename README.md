@@ -38,6 +38,9 @@ heron.basic_auth_username = "your-username"
 heron.basic_auth_password = "super-random-password"
 
 # optionally, specify the provider used to pull bank data from, in slug format
+# currently supported: plaid, finicity, yodlee, truelayer
+# this setting will automatically convert the data provider's API format into a
+# Heron Data compatible format
 heron.provider = "plaid"
 ```
 

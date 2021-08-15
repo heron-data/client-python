@@ -1,6 +1,8 @@
 import unittest
+from copy import deepcopy
 from unittest.mock import ANY, patch
 
+import heron
 from heron import Category, EndUser, Merchant, Transaction, error
 
 from .mocks import MockResponse
@@ -134,6 +136,145 @@ class TestCreate(unittest.TestCase):
                 )
 
             mock_post.assert_not_called()
+
+
+class TestCreateFromProvider(unittest.TestCase):
+    def setUp(self):
+        self.response_payload = {
+            "transactions": [
+                {
+                    "amount": 1.11,
+                    "description": "foo",
+                }
+            ]
+        }
+        self.normalized_payload = {
+            "account_id": "account-foo-bar",
+            "amount": -2307.21,
+            "currency": "USD",
+            "categories_default": ["Shops", "Computers and Electronics"],
+            "timestamp": "2017-01-29T00:00:00",
+            "description": "A transaction description",
+            "transaction_code": "in store",
+            "reference_id": "transaction-bar-baz",
+        }
+
+    def tearDown(self):
+        heron.provider = None
+
+    def test_create_from_plaid(self):
+        heron.provider = "plaid"
+        plaid_data = {
+            "account_id": self.normalized_payload["account_id"],
+            "amount": -self.normalized_payload["amount"],
+            "iso_currency_code": self.normalized_payload["currency"],
+            "category": self.normalized_payload["categories_default"],
+            "datetime": self.normalized_payload["timestamp"],
+            "name": self.normalized_payload["description"],
+            "payment_channel": self.normalized_payload["transaction_code"],
+            "transaction_id": self.normalized_payload["reference_id"],
+        }
+
+        with patch("requests.post") as mock_post:
+            mock_post.return_value = MockResponse(self.response_payload, 200)
+
+            Transaction.create(**plaid_data)
+
+            mock_post.assert_called_once_with(
+                ANY,
+                headers=ANY,
+                json={"transactions": [self.normalized_payload]},
+                auth=ANY,
+            )
+
+    def test_create_from_yodlee(self):
+        heron.provider = "yodlee"
+        yodlee_data = {
+            "accountId": self.normalized_payload["account_id"],
+            "amount": {
+                "amount": int(self.normalized_payload["amount"] * 100),
+                "currency": self.normalized_payload["currency"],
+            },
+            "category": self.normalized_payload["categories_default"],
+            "date": self.normalized_payload["timestamp"].split("T")[0],
+            "description": {
+                "original": self.normalized_payload["description"],
+            },
+            "id": self.normalized_payload["reference_id"],
+            "type": self.normalized_payload["transaction_code"],
+        }
+
+        with patch("requests.post") as mock_post:
+            mock_post.return_value = MockResponse(self.response_payload, 200)
+
+            Transaction.create(**yodlee_data)
+
+            normalized_payload_with_date = deepcopy(self.normalized_payload)
+            normalized_payload_with_date["date"] = normalized_payload_with_date.pop(
+                "timestamp"
+            ).split("T")[0]
+            mock_post.assert_called_once_with(
+                ANY,
+                headers=ANY,
+                json={"transactions": [normalized_payload_with_date]},
+                auth=ANY,
+            )
+
+    def test_create_from_finicity(self):
+        heron.provider = "finicity"
+        finicity_data = {
+            "accountId": self.normalized_payload["account_id"],
+            "amount": self.normalized_payload["amount"],
+            "categorization": {
+                "category": self.normalized_payload["categories_default"],
+            },
+            "postedDate": self.normalized_payload["timestamp"].split("T")[0],
+            "description": self.normalized_payload["description"],
+            "id": self.normalized_payload["reference_id"],
+            "type": self.normalized_payload["transaction_code"],
+        }
+
+        with patch("requests.post") as mock_post:
+            mock_post.return_value = MockResponse(self.response_payload, 200)
+
+            Transaction.create(**finicity_data)
+
+            normalized_payload_without_currency = deepcopy(self.normalized_payload)
+            normalized_payload_without_currency[
+                "date"
+            ] = normalized_payload_without_currency.pop("timestamp").split("T")[0]
+            normalized_payload_without_currency.pop("currency")
+            mock_post.assert_called_once_with(
+                ANY,
+                headers=ANY,
+                json={"transactions": [normalized_payload_without_currency]},
+                auth=ANY,
+            )
+
+    def test_create_from_truelayer(self):
+        heron.provider = "truelayer"
+        truelayer_data = {
+            "account_id": self.normalized_payload["account_id"],
+            "amount": self.normalized_payload["amount"],
+            "currency": self.normalized_payload["currency"],
+            "description": self.normalized_payload["description"],
+            "timestamp": self.normalized_payload["timestamp"],
+            "transaction_category": self.normalized_payload["transaction_code"],
+            "transaction_classification": self.normalized_payload["categories_default"],
+            "transaction_id": self.normalized_payload["reference_id"],
+        }
+
+        with patch("requests.post") as mock_post:
+            mock_post.return_value = MockResponse(self.response_payload, 200)
+
+            Transaction.create(**truelayer_data)
+
+            mock_post.assert_called_once_with(
+                ANY,
+                headers=ANY,
+                json={"transactions": [self.normalized_payload]},
+                auth=ANY,
+            )
 
 
 class TestCreateMany(unittest.TestCase):
