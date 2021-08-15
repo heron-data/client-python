@@ -1,7 +1,9 @@
+import os
+
 _base_url = "https://app.herondata.io/api"
 
-basic_auth_username = None
-basic_auth_password = None
+basic_auth_username = os.getenv("HERON_USERNAME")
+basic_auth_password = os.getenv("HERON_PASSWORD")
 provider = None
 
 from .category import Category  # noqa
