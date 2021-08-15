@@ -1,3 +1,5 @@
+from json.decoder import JSONDecodeError
+
 import requests
 
 from heron import _base_url, error
@@ -39,35 +41,40 @@ class BaseResource:
             ),
             **kwargs,
         )
-        res_json = res.json()
         if res.ok:
             try:
-                payload = res_json[cls._envelope.single]
+                payload = res.json()[cls._envelope.single]
             except KeyError:
                 pass
             else:
                 return cls(**payload)
             try:
-                payloads = res_json[cls._envelope.many]
+                payloads = res.json()[cls._envelope.many]
             except KeyError:
                 pass
             else:
                 return [cls(**payload) for payload in payloads]
             return None
 
+        try:
+            error_json = res.json()
+        except JSONDecodeError:
+            error_json = {"description": "Something went wrong"}
+
         if res.status_code == 422:
-            e = error.HeronValidationError(str(res.json()))
+            e = error.HeronValidationError(error_json["description"])
             e.code = res.status_code
-            e.json = res_json
+            e.json = error_json
             raise e
 
         if not str(res.status_code).startswith("5") or not retry:
             try:
-                e = error.HeronError(res.json()["name"])
+                error_msg = error_json["description"] or error_json["name"]
             except KeyError:
-                e = error.HeronError("Something went wrong")
+                error_msg = "Something went wrong"
+            e = error.HeronError(error_msg)
             e.code = res.status_code
-            e.json = res_json
+            e.json = error_json
             raise e
 
         return cls.do_request(method, path=path, json=json, retry=False, **params)
