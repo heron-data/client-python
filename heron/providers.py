@@ -1,4 +1,4 @@
-from heron import utils
+from .utils import to_dollars, to_iso_format
 
 
 def from_plaid(t):
@@ -29,7 +29,7 @@ def from_yodlee(t):
     # https://developer.yodlee.com/api-reference#operation/getTransactions
     return {
         "account_id": t["accountId"],
-        "amount": utils.to_dollars(t["amount"]["amount"]),
+        "amount": to_dollars(t["amount"]["amount"]),
         "date": t["date"],
         "categories_default": t["category"],
         "currency": t["amount"]["currency"],
@@ -45,7 +45,7 @@ def from_finicity(t):
         "account_id": t["accountId"],
         "amount": t["amount"],
         "categories_default": t["categorization"]["category"],
-        "timestamp": utils.to_iso_format(t["postedDate"]),
+        "timestamp": to_iso_format(t["postedDate"]),
         "description": t["description"],
         "reference_id": str(t["id"]),
         "transaction_code": t["type"],

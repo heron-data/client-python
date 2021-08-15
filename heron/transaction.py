@@ -3,7 +3,7 @@ import warnings
 from .base import BaseResource, Envelope
 from .category import Category
 from .merchant import Merchant
-from .parser import PROVIDER_HANDLER
+from .providers import PROVIDER_HANDLER
 
 
 class Transaction(BaseResource):
