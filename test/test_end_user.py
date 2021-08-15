@@ -6,6 +6,12 @@ from heron import EndUser
 from .mocks import MockResponse
 
 
+class TestRepr(unittest.TestCase):
+    def test_repr(self):
+        e = EndUser(heron_id="eus_1", name="foo")
+        self.assertEqual(str(e), "<EndUser eus_1: foo>")
+
+
 class TestEndUser(unittest.TestCase):
     def setUp(self):
         self.end_user_dict = {

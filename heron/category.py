@@ -6,6 +6,9 @@ class Category(BaseResource):
     _path = "categories"
     _prefix = "ctg_"
 
+    def __repr__(self):
+        return f"<Category {self.heron_id}: {self.label}>"
+
     def __init__(self, **kwargs):
         self.heron_id = kwargs.get("heron_id")
         self.annotator = kwargs.get("annotator")

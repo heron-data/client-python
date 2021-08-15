@@ -6,6 +6,12 @@ from heron import Category, EndUser, Merchant, Transaction, error
 from .mocks import MockResponse
 
 
+class TestRepr(unittest.TestCase):
+    def test_repr(self):
+        t = Transaction(heron_id="txn_1", description="foo")
+        self.assertEqual(str(t), "<Transaction txn_1: foo>")
+
+
 class TestCreate(unittest.TestCase):
     def setUp(self):
         self.transaction_dict = {

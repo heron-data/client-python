@@ -6,6 +6,9 @@ class Merchant(BaseResource):
     _path = "merchants"
     _prefix = "mrc_"
 
+    def __repr__(self):
+        return f"<Merchant {self.heron_id}: {self.name}>"
+
     def __init__(self, **kwargs):
         self.heron_id = kwargs.get("heron_id")
         self.name = kwargs.get("name")

@@ -8,6 +8,9 @@ class Transaction(BaseResource):
     _path = "transactions"
     _prefix = "txn_"
 
+    def __repr__(self):
+        return f"<Transaction {self.heron_id}: {self.description}>"
+
     def __init__(self, **data):
         self.heron_id = data.get("heron_id")
         self.account_id = data.get("account_id")

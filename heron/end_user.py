@@ -6,6 +6,9 @@ class EndUser(BaseResource):
     _path = "end_users"
     _prefix = "eus_"
 
+    def __repr__(self):
+        return f"<EndUser {self.heron_id}: {self.name}>"
+
     def __init__(self, **data):
         self.heron_id = data.get("heron_id")
         self.name = data.get("name")
