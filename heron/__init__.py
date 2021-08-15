@@ -2,7 +2,7 @@ _base_url = "https://app.herondata.io/api"
 
 basic_auth_username = None
 basic_auth_password = None
-data_source = None
+provider = None
 
 from .category import Category  # noqa
 from .end_user import EndUser  # noqa

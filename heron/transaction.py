@@ -1,6 +1,9 @@
+import warnings
+
 from .base import BaseResource, Envelope
 from .category import Category
 from .merchant import Merchant
+from .providers import PROVIDER_HANDLER
 
 
 class Transaction(BaseResource):
@@ -40,6 +43,25 @@ class Transaction(BaseResource):
         self.is_potential_duplicate = data.get("is_potential_duplicate")
         self.is_recurring = data.get("is_recurring")
 
+    @staticmethod
+    def _parse_transactions(transactions):
+        from heron import provider
+
+        if not provider:
+            return transactions
+
+        provider_slug = provider.lower().replace(" ", "-")
+        try:
+            parse_function = PROVIDER_HANDLER[provider_slug]
+        except KeyError as e:
+            warnings.warn(
+                f"provider '{e}' not supported, will not apply format conversion",
+                UserWarning,
+            )
+            return transactions
+
+        return [parse_function(t) for t in transactions]
+
     @classmethod
     def create(cls, end_user=None, **data):
         return cls.create_many([data], end_user=end_user)[0]
@@ -54,9 +76,8 @@ class Transaction(BaseResource):
             raise ValueError("no transactions to create")
         if not all(isinstance(t, dict) for t in transactions):
             raise ValueError("transactions must be a list of dicts")
-        if not all("description" in t and "amount" in t for t in transactions):
-            raise ValueError("'description' and 'amount' are required")
 
+        transactions = cls._parse_transactions(transactions)
         if end_user:
             if isinstance(end_user, EndUser) and not end_user.end_user_id:
                 raise ValueError("end_user object must have an end_user_id")
@@ -75,7 +96,8 @@ class Transaction(BaseResource):
                 }
                 for t in transactions
             ]
-        # TODO parse amount and other values depending on data source e.g. plaid
+        if not all("description" in t and "amount" in t for t in transactions):
+            raise ValueError("'description' and 'amount' are required")
 
         return super().create_many(transactions)
 

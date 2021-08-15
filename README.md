@@ -32,12 +32,15 @@ python setup.py install
 Import the `heron` package and set your config:
 
 ```python
+import os
+
 import heron
 
-heron.basic_auth_username = "your-username"
-heron.basic_auth_password = "super-random-password"
+heron.basic_auth_username = os.getenv("HERON_USERNAME")
+heron.basic_auth_password = os.getenv("HERON_PASSWORD")
 
-# optionally, specify the provider used to pull bank data from, in slug format
+# if you pull from a fintech API, specify it here to get automatic conversion
+# into a Heron Data API format. Supported: plaid, finicity, yodlee, truelayer
 heron.provider = "plaid"
 ```
 
