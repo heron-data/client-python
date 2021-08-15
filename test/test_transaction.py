@@ -1,8 +1,7 @@
 import unittest
 from unittest.mock import ANY, patch
 
-from heron import error
-from heron.resources import Category, EndUser, Merchant, Transaction
+from heron import Category, EndUser, Merchant, Transaction, error
 
 from .mocks import MockResponse
 
