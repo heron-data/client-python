@@ -1,3 +1,5 @@
+[![Lint and Test](https://github.com/heron-data/client-python/actions/workflows/lint_and_test.yml/badge.svg)](https://github.com/heron-data/client-python/actions/workflows/lint_and_test.yml)
+
 # Heron Python
 
 This library provides easy access to the Heron Data API from applications
