@@ -45,6 +45,9 @@ heron.basic_auth_password = os.getenv("HERON_PASSWORD")
 heron.provider = "plaid"
 ```
 
+Alternatively, set `HERON_USERNAME` and `HERON_PASSWORD` as environment
+variables which will be automatically picked up.
+
 Then you can issue API requests using Python classes:
 
 ```python
