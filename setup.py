@@ -14,7 +14,7 @@ with open(os.path.join(HERE, "README.md")) as fid:
 # This call to setup() does all the work
 setup(
     name="heron-data",
-    version="0.1.1",
+    version="0.1.2",
     description="A client for the Heron Data API",
     long_description=README,
     long_description_content_type="text/markdown",
