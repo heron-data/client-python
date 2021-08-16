@@ -62,7 +62,7 @@ You can see a longer example in the `examples/` directory.
 
 ## Contributing
 
-Clone this repository, and install dev dependencies:
+Fork this repository, and install dev dependencies:
 
 ```
 pip install -r requirements.dev.txt
