@@ -5,6 +5,8 @@
 This library provides easy access to the Heron Data API from applications
 written in Python.
 
+![Demo GIF](https://user-images.githubusercontent.com/16668651/129679702-f9c1ae2d-66ec-43e1-818f-0f1d539ba348.gif)
+
 ## Documentation
 
 No language-specific docs are currently maintained. For documentation on the
