@@ -2,8 +2,8 @@
 
 # Heron Python
 
-This library provides easy access to the Heron Data API from applications
-written in Python.
+This library provides easy access to the [Heron Data](https://www.herondata.io)
+API for applications written in Python.
 
 ![Demo GIF](https://user-images.githubusercontent.com/16668651/129679702-f9c1ae2d-66ec-43e1-818f-0f1d539ba348.gif)
 
@@ -88,4 +88,4 @@ Run linting with `flake8` and `black`:
 flake8 . && black .
 ```
 
-Make a PR against the `main` branch and it will be reviewed.
+Submit a PR against the `main` branch and it will be reviewed.
