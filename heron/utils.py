@@ -22,16 +22,16 @@ def to_dollars(cents):
 
 def to_iso_format(d):
     if isinstance(d, int):
-        return datetime.fromtimestamp(d).isoformat()
+        return datetime.utcfromtimestamp(d).isoformat()
 
     if isinstance(d, str) and d.isdigit():
-        return datetime.fromtimestamp(int(d)).isoformat()
+        return datetime.utcfromtimestamp(int(d)).isoformat()
 
     try:
-        datetime.strptime(d, "%Y-%m-%dT%H:%M:%S")
+        d = datetime.strptime(d, "%Y-%m-%dT%H:%M:%S")
     except TypeError:
         pass
     else:
-        return d
+        return d.isoformat()
 
     raise ValueError(f"cannot convert {d} to ISO format")
