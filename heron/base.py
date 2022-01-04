@@ -23,6 +23,9 @@ class BaseResource:
     def __repr__(self):
         return f"<{self.__class__.__name__}: {self.heron_id}>"
 
+    def to_dict(self):
+        return vars(self)
+
     @classmethod
     def do_request(cls, method, path=None, json=None, retry=False, **params):
         from heron import basic_auth_password, basic_auth_username
