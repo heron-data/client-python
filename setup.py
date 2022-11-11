@@ -31,5 +31,5 @@ setup(
     packages=find_packages(exclude=["test", "test.*", "examples", "examples.*"]),
     python_requires=">=3.8.*",
     include_package_data=True,
-    install_requires=["requests==2.26.0"],
+    install_requires=["requests~=2.26.0"],
 )
