@@ -29,7 +29,7 @@ setup(
         "Programming Language :: Python :: 3",
     ],
     packages=find_packages(exclude=["test", "test.*", "examples", "examples.*"]),
-    python_requires=">=3.8.*",
+    python_requires=">=3.8",
     include_package_data=True,
     install_requires=["requests~=2.31.0"],
 )
