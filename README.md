@@ -1,4 +1,6 @@
-[![Lint and Test](https://github.com/heron-data/client-python/actions/workflows/lint_and_test.yml/badge.svg)](https://github.com/heron-data/client-python/actions/workflows/lint_and_test.yml)
+> ⚠️ **Deprecated**: This library is no longer actively maintained.  
+> Please refer to the [Heron Data Docs](https://docs.herondata.io/get-started/quickstart) for the most up-to-date API usage information.
+
 
 # Heron Python
 
